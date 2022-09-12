@@ -20,7 +20,7 @@ namespace AliasWebAPI.Controllers
             _authLL = authLL;
         }
 
-        [HttpPost]
+        [HttpPost("Register")]
         public async Task<string> Register(UserRegisterDTO userRegisterDTO)
         {
             ResponseAjax result = new ResponseAjax();

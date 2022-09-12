@@ -1,6 +1,7 @@
 ﻿using AliasWebAPI.InternalServices;
 using AliasWebAPI.Models;
 using Microsoft.Extensions.Configuration;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace AliasWebAPI.DAL
@@ -23,7 +24,7 @@ namespace AliasWebAPI.DAL
             {
                 email = email,
             };
-            return await _sqlQueryService.ExecuteScalarAsync<UserProfile>(query, parameters);
+            return (await _sqlQueryService.QueryAsync<UserProfile>(query, parameters)).FirstOrDefault();
         }
 
         public async Task<UserProfile> GetUserProfileByUsername(string username)
@@ -36,7 +37,7 @@ namespace AliasWebAPI.DAL
             {
                 username = username,
             };
-            return await _sqlQueryService.ExecuteScalarAsync<UserProfile>(query, parameters);
+            return (await _sqlQueryService.QueryAsync<UserProfile>(query, parameters)).FirstOrDefault();
         }
     }
 }

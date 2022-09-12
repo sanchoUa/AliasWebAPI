@@ -17,7 +17,7 @@ namespace AliasWebAPI.Controllers
             _userProfileLL = userProfileLL;
         }
 
-        [HttpGet]
+        [HttpGet("DoesEmailExist")]
         public async Task<string> DoesEmailExist(string email)
         {
             ResponseAjax result = new ResponseAjax();
@@ -25,7 +25,7 @@ namespace AliasWebAPI.Controllers
             return JsonSerializer.Serialize(result);
         }
 
-        [HttpGet]
+        [HttpGet("DoesUsernameExist")]
         public async Task<string> DoesUsernameExist(string username)
         {
             ResponseAjax result = new ResponseAjax();
