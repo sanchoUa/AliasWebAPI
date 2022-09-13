@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AliasWebAPI.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,6 +21,11 @@ namespace AliasWebAPI.InternalServices
         public static string UsingExistingUsernameMsg(string invalidUsername)
         {
             return $"Using existing Username -> {invalidUsername}";
+        }
+
+        public static string IncorrectLoginDataMsg(UserLoginDTO userLoginDTO)
+        {
+            return $"Incorrect Username or Password -> {userLoginDTO}";
         }
     }
 }

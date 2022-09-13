@@ -8,7 +8,7 @@ namespace AliasWebAPI.DAL
 {
     public class UserProfileDAL: BaseDAL, IUserProfileDAL
     {
-        private SqlQueryService _sqlQueryService;
+        private readonly SqlQueryService _sqlQueryService;
 
         public UserProfileDAL(IConfiguration configuration) : base(configuration)
         {
@@ -22,7 +22,7 @@ namespace AliasWebAPI.DAL
             ";
             var parameters = new
             {
-                email = email,
+                email,
             };
             return (await _sqlQueryService.QueryAsync<UserProfile>(query, parameters)).FirstOrDefault();
         }
@@ -35,7 +35,7 @@ namespace AliasWebAPI.DAL
             ";
             var parameters = new
             {
-                username = username,
+                username,
             };
             return (await _sqlQueryService.QueryAsync<UserProfile>(query, parameters)).FirstOrDefault();
         }

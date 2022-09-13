@@ -1,27 +1,32 @@
-﻿using System.Security.Cryptography;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace AliasWebAPI.Models
 {
     public class Password
     {
+        public Password() { }
         public Password(string password)
         {
             var hasher = new HMACSHA512();
-            _hash = hasher.ComputeHash(Encoding.UTF8.GetBytes(password));
-            _salt = hasher.Key;
-        }
-        private byte[] _hash { get; set; }
-        private byte[] _salt { get; set; }
-
-        public byte[] Hash
-        {
-            get { return this._hash; }
+            Hash = hasher.ComputeHash(Encoding.UTF8.GetBytes(password));
+            Salt = hasher.Key;
         }
 
-        public byte[] Salt
-        {
-            get { return this._salt; }
-        }
+        [Column("PASSWORD_HASH")]
+        public byte[] Hash { get; set; }
+        [Column("PASSWORD_SALT")]
+        public byte[] Salt { get; set; }
+    }
+
+    public class PasswordString
+    {
+        public PasswordString() { }
+
+        [Column("PASSWORD_HASH")]
+        public string Hash { get; set; }
+        [Column("PASSWORD_SALT")]
+        public string Salt { get; set; }
     }
 }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Data;
-using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
 using System.Data.Common;
@@ -20,18 +19,18 @@ namespace AliasWebAPI.InternalServices
             _connectionString = connectionString;
         }
 
-        public async Task<IEnumerable<TEntity>> QueryAsync<TEntity>(string sql, object parameters, CommandType? commandType = null, int commandTimeout = _commandTimeout, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IEnumerable<TEntity>> QueryAsync<TEntity>(string sql, object parameters, CommandType? commandType = null, int commandTimeout = _commandTimeout, CancellationToken cancellationToken = default)
         {
             SqlMapper.SetTypeMap(typeof(TEntity), null);
             return await ExeQueryAsync((connection) => connection.QueryAsync<TEntity>(new CommandDefinition(sql, parameters, null, commandTimeout, commandType: commandType, cancellationToken: cancellationToken)));
         }
 
-        public async Task<object> ExecuteScalarAsync(string sql, object parameters, CommandType? commandType = null, int commandTimeout = _commandTimeout, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<object> ExecuteScalarAsync(string sql, object parameters, CommandType? commandType = null, int commandTimeout = _commandTimeout, CancellationToken cancellationToken = default)
         {
                return await ExeQueryAsync((connection) => connection.ExecuteScalarAsync(new CommandDefinition(sql, parameters, null, commandTimeout, commandType: commandType, cancellationToken: cancellationToken)));
         }
 
-        public async Task<TEntity> ExecuteScalarAsync<TEntity>(string sql, object parameters, CommandType? commandType = null, int commandTimeout = _commandTimeout, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<TEntity> ExecuteScalarAsync<TEntity>(string sql, object parameters, CommandType? commandType = null, int commandTimeout = _commandTimeout, CancellationToken cancellationToken = default)
         {
             return await ExeQueryAsync((connection) => connection.ExecuteScalarAsync<TEntity>(new CommandDefinition(sql, parameters, null, commandTimeout, commandType: commandType, cancellationToken: cancellationToken)));
         }

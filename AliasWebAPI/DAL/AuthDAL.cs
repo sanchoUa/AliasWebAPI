@@ -1,8 +1,6 @@
 ﻿using AliasWebAPI.InternalServices;
 using AliasWebAPI.Models;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -10,14 +8,14 @@ namespace AliasWebAPI.DAL
 {
     public class AuthDAL : BaseDAL, IAuthDAL
     {
-        private SqlQueryService _sqlQueryService;
+        private readonly SqlQueryService _sqlQueryService;
 
         public AuthDAL(IConfiguration configuration) : base(configuration)
         {
             _sqlQueryService = SqlQueryServiceFactory();
         }
 
-        public void AddUserProfileToDB(UserProfile userProfile)
+        public async void AddUserProfileToDB(UserProfile userProfile)
         {
             var query = @"
                 INSERT INTO UserProfile (USERNAME, EMAIL, PASSWORD_HASH, PASSWORD_SALT, ROLE) 
@@ -31,7 +29,20 @@ namespace AliasWebAPI.DAL
                 passwordSalt = userProfile.Password.Salt,
                 role = userProfile.Role,
             };
-            _sqlQueryService.ExecuteScalarAsync(query, parameters);
+            await _sqlQueryService.ExecuteScalarAsync(query, parameters);
+        }
+
+        public async Task<Password> GetPasswordByUsername(string username)
+        {
+            var query = @"
+                SELECT PASSWORD_HASH, PASSWORD_SALT FROM dbo.UserProfile 
+                WHERE USERNAME = @username 
+            ";
+            var parameters = new
+            {
+                username
+            };
+            return (await _sqlQueryService.QueryAsync<Password>(query, parameters)).FirstOrDefault();
         }
     }
 }

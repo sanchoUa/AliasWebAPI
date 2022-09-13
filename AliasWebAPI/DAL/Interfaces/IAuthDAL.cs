@@ -8,6 +8,7 @@ namespace AliasWebAPI.DAL
 {
     public interface IAuthDAL
     {
-        public void AddUserProfileToDB(UserProfile userProfile);
+        void AddUserProfileToDB(UserProfile userProfile);
+        Task<Password> GetPasswordByUsername(string username);
     }
 }

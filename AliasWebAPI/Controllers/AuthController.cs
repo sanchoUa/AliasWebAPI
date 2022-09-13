@@ -13,7 +13,7 @@ namespace AliasWebAPI.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private IAuthLL _authLL;
+        private readonly IAuthLL _authLL;
 
         public AuthController(IAuthLL authLL)
         {
@@ -23,7 +23,7 @@ namespace AliasWebAPI.Controllers
         [HttpPost("Register")]
         public async Task<string> Register(UserRegisterDTO userRegisterDTO)
         {
-            ResponseAjax result = new ResponseAjax();
+            ResponseAjax result = new();
             if (ModelState.IsValid)
             {
                 result = await _authLL.Register(userRegisterDTO); 
@@ -32,6 +32,30 @@ namespace AliasWebAPI.Controllers
             {
                 result.IsSuccess = false;
                 result.ErrorMsg = ErrorMessage.InvalidModelMsg(userRegisterDTO);
+            }
+            return JsonSerializer.Serialize(result);
+        }
+
+        [HttpPost("Login")]
+        public async Task<string> Login(UserLoginDTO userLoginDTO)
+        {
+            ResponseAjax result = new();
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    result.Data = await _authLL.Login(userLoginDTO);
+                }
+                catch (IncorrectLoginDataExeption ex)
+                {
+                    result.IsSuccess = false;
+                    result.ErrorMsg = ex.Message;
+                }
+            }
+            else
+            {
+                result.IsSuccess = false;
+                result.ErrorMsg = ErrorMessage.InvalidModelMsg(userLoginDTO);
             }
             return JsonSerializer.Serialize(result);
         }

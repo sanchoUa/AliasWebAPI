@@ -5,6 +5,7 @@ namespace AliasWebAPI.LL
 {
     public interface IAuthLL: ILL
     {
-        public Task<ResponseAjax> Register(UserRegisterDTO userRegisterDTO);
+        Task<ResponseAjax> Register(UserRegisterDTO userRegisterDTO);
+        Task<string> Login(UserLoginDTO user);
     }
 }

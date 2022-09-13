@@ -3,14 +3,17 @@ using AliasWebAPI.Enums;
 using AliasWebAPI.InternalServices;
 using AliasWebAPI.Models;
 using System;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace AliasWebAPI.LL
 {
     public class AuthLL: IAuthLL, ILL
     {
-        private IAuthDAL _authDAL;
-        private IUserProfileLL _userProfileLL;
+        private readonly IAuthDAL _authDAL;
+        private readonly IUserProfileLL _userProfileLL;
         public AuthLL(IAuthDAL authDAL, IUserProfileLL userProfileLL)
         {
             _authDAL = authDAL;
@@ -19,7 +22,7 @@ namespace AliasWebAPI.LL
 
         public async Task<ResponseAjax> Register(UserRegisterDTO user)
         {
-            ResponseAjax result = new ResponseAjax();
+            ResponseAjax result = new();
             if (await _userProfileLL.DoesEmailExist(user.Email))
             {
                 result.IsSuccess = false;
@@ -42,6 +45,23 @@ namespace AliasWebAPI.LL
                 _authDAL.AddUserProfileToDB(userProfile);
             }
             return result;
+        }
+
+        public async Task<string> Login(UserLoginDTO user)
+        {
+            if (await IsPasswordCorrect(user))
+            {
+                return "token";
+            }
+            throw new IncorrectLoginDataExeption(ErrorMessage.IncorrectLoginDataMsg(user));
+        }
+
+        private async Task<bool> IsPasswordCorrect(UserLoginDTO user)
+        {
+            Password realPassword = await _authDAL.GetPasswordByUsername(user.Username);
+            var hasher = new HMACSHA512(realPassword.Salt);
+            var passwordHash = hasher.ComputeHash(Encoding.UTF8.GetBytes(user.Password));
+            return realPassword.Hash.SequenceEqual(passwordHash);
         }
     }
 }
