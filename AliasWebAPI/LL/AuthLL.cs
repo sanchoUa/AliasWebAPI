@@ -49,7 +49,7 @@ namespace AliasWebAPI.LL
 
         public async Task<string> Login(UserLoginDTO user)
         {
-            if (await IsPasswordCorrect(user))
+            if (await _userProfileLL.DoesUsernameExist(user.Username) && await IsPasswordCorrect(user))
             {
                 return "token";
             }
@@ -59,9 +59,16 @@ namespace AliasWebAPI.LL
         private async Task<bool> IsPasswordCorrect(UserLoginDTO user)
         {
             Password realPassword = await _authDAL.GetPasswordByUsername(user.Username);
-            var hasher = new HMACSHA512(realPassword.Salt);
-            var passwordHash = hasher.ComputeHash(Encoding.UTF8.GetBytes(user.Password));
-            return realPassword.Hash.SequenceEqual(passwordHash);
+            if (realPassword != null)
+            {
+                var hasher = new HMACSHA512(realPassword.Password_salt);
+                var passwordHash = hasher.ComputeHash(Encoding.UTF8.GetBytes(user.Password));
+                return realPassword.Password_hash.SequenceEqual(passwordHash);
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }

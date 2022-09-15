@@ -10,23 +10,11 @@ namespace AliasWebAPI.Models
         public Password(string password)
         {
             var hasher = new HMACSHA512();
-            Hash = hasher.ComputeHash(Encoding.UTF8.GetBytes(password));
-            Salt = hasher.Key;
+            Password_hash = hasher.ComputeHash(Encoding.UTF8.GetBytes(password));
+            Password_salt = hasher.Key;
         }
 
-        [Column("PASSWORD_HASH")]
-        public byte[] Hash { get; set; }
-        [Column("PASSWORD_SALT")]
-        public byte[] Salt { get; set; }
-    }
-
-    public class PasswordString
-    {
-        public PasswordString() { }
-
-        [Column("PASSWORD_HASH")]
-        public string Hash { get; set; }
-        [Column("PASSWORD_SALT")]
-        public string Salt { get; set; }
+        public byte[] Password_hash { get; set; }
+        public byte[] Password_salt { get; set; }
     }
 }

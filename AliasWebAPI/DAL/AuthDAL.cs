@@ -25,8 +25,8 @@ namespace AliasWebAPI.DAL
             {
                 username = userProfile.UserName,
                 email = userProfile.Email,
-                passwordHash = userProfile.Password.Hash,
-                passwordSalt = userProfile.Password.Salt,
+                passwordHash = userProfile.Password.Password_hash,
+                passwordSalt = userProfile.Password.Password_salt,
                 role = userProfile.Role,
             };
             await _sqlQueryService.ExecuteScalarAsync(query, parameters);
